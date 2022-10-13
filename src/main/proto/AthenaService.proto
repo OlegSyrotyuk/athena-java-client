@@ -1,0 +1,48 @@
+syntax = "proto3";
+package net.villenium.athena;
+
+import "google/protobuf/empty.proto";
+
+message CreateRequest {
+  string name = 1;
+}
+
+message SetObjectRequest {
+  string storage = 1;
+  string id = 2;
+  string data = 3;
+  string options = 4;
+}
+
+message GetObjectRequest {
+  string storage = 1;
+  string id = 2;
+  string options = 3;
+}
+
+message GetObjectResponse {
+  string data = 1;
+}
+
+message GetTopByStatRequest {
+  string storage = 1;
+  string stat = 2;
+  int32 count = 3;
+  bool ascending = 4;
+}
+
+message FindAllRequest {
+  string storage = 1;
+  string field = 2;
+  string value = 3;
+}
+
+service Athena {
+  rpc createStorage(CreateRequest) returns (google.protobuf.Empty);
+  rpc upsert(SetObjectRequest) returns (google.protobuf.Empty);
+  rpc getObject(GetObjectRequest) returns (GetObjectResponse);
+  rpc getTopByStat(GetTopByStatRequest) returns (stream GetObjectResponse);
+  rpc findAll(FindAllRequest) returns (stream GetObjectResponse);
+  //rpc getDataStream(GetStorageDataRequest) returns (stream GetStorageDataResponse);
+}
+
