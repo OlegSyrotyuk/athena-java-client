@@ -3,7 +3,7 @@ package net.villenium.athena.client.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.villenium.athena.client.DataOptions;
-import net.villenium.athena.client.impl.AthenaStorageStrategy;
+import net.villenium.athena.client.impl.strategy.AthenaStorageStrategy;
 
 import java.util.concurrent.TimeUnit;
 

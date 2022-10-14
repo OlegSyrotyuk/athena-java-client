@@ -1,4 +1,4 @@
-package net.villenium.athena.client.impl;
+package net.villenium.athena.client.impl.strategy;
 
 import com.google.gson.FieldNamingStrategy;
 import net.villenium.athena.client.Id;

@@ -1,7 +1,7 @@
 package net.villenium.athena.client;
 
+import net.villenium.athena.client.impl.find.FindRequest;
 import net.villenium.athena.client.util.Constant;
-import net.villenium.athena.client.util.Operator;
 
 import java.util.List;
 
@@ -73,13 +73,17 @@ public interface IAthenaStorage {
 
     /**
      * Получить все объекты поле которых равняется необходимому значению (числа).
-     * @param field поле.
-     * @param value значение.
-     * @param operator оператор сравнивания.
+     * @param request параметры запроса.
      * @return все объекты коллекции поле которого равняется значению.
      */
-    <T> List<T> findAll(String field, Object value, Operator operator, Class<T> type);
+    <T> List<T> findAll(FindRequest request, Class<T> type);
 
+    /**
+     * Вызвать билдер запросов.
+     * @param type тип объекта.
+     * @return билдер.
+     */
+    <T> IFindRequestBuilder findAll(Class<T> type);
 
     /**
      * Асинхронные методы для работы с хранилищем.

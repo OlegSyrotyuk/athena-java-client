@@ -12,7 +12,11 @@ import net.villenium.athena.AthenaService;
 import net.villenium.athena.client.DataOptions;
 import net.villenium.athena.client.IAthenaStorage;
 import net.villenium.athena.client.IAthenaStorageAsync;
-import net.villenium.athena.client.util.Operator;
+import net.villenium.athena.client.IFindRequestBuilder;
+import net.villenium.athena.client.impl.auth.JwtCredential;
+import net.villenium.athena.client.impl.async.StorageAsync;
+import net.villenium.athena.client.impl.find.FindRequest;
+import net.villenium.athena.client.impl.find.FindRequestBuilder;
 
 import java.util.List;
 
@@ -82,19 +86,22 @@ public class Storage implements IAthenaStorage {
     }
 
     @Override
-    public <T> List<T> findAll(String field, Object value, Operator operator, Class<T> type) {
+    public <T> List<T> findAll(FindRequest findRequest, Class<T> type) {
         List<T> list = Lists.newArrayList();
         AthenaService.FindAllRequest request = AthenaService.FindAllRequest
                 .newBuilder()
                 .setStorage(storageName)
-                .setField(field)
-                .setValue(gson.toJson(value))
-                .setOperator(operator.name())
+                .setRequest(gson.toJson(findRequest))
                 .build();
         stub.withCallCredentials(credentials).findAll(request).forEachRemaining(response -> {
             list.add(gson.fromJson(response.getData(), type));
         });
         return list;
+    }
+
+    @Override
+    public <T> IFindRequestBuilder findAll(Class<T> type) {
+        return new FindRequestBuilder<>(this, type);
     }
 
     @Override

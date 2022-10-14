@@ -33,9 +33,7 @@ message GetTopByStatRequest {
 
 message FindAllRequest {
   string storage = 1;
-  string field = 2;
-  string value = 3;
-  string operator = 4;
+  string request = 2;
 }
 
 service Athena {
@@ -44,6 +42,5 @@ service Athena {
   rpc getObject(GetObjectRequest) returns (GetObjectResponse);
   rpc getTopByStat(GetTopByStatRequest) returns (stream GetObjectResponse);
   rpc findAll(FindAllRequest) returns (stream GetObjectResponse);
-  //rpc getDataStream(GetStorageDataRequest) returns (stream GetStorageDataResponse);
 }
 

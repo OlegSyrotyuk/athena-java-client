@@ -1,4 +1,4 @@
-package net.villenium.athena.client.impl;
+package net.villenium.athena.client.impl.async;
 
 import com.google.gson.Gson;
 import com.google.protobuf.Empty;
