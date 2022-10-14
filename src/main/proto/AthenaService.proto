@@ -35,6 +35,7 @@ message FindAllRequest {
   string storage = 1;
   string field = 2;
   string value = 3;
+  string operator = 4;
 }
 
 service Athena {

@@ -2,6 +2,7 @@ package net.villenium.athena.client;
 
 import net.villenium.athena.client.impl.StorageBuilder;
 import net.villenium.athena.client.util.Constant;
+import net.villenium.athena.client.util.Operator;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -18,15 +19,11 @@ public class Test {
         User mother = new User("mother", 72);
         User test_user = new User("test_user", 45535);
 
-        storage.async().upsert(test_user.getName(), test_user, DataOptions.builder().cache(true).cacheTime(10).build());
+        storage.async().upsert(test_user.getName(), test_user, Constant.WITHOUT_CACHING);
 
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            User user = storage.getObject(i + "user", User.class);
-            System.out.println(user.toString());
+        for (User age : storage.findAll("age", 10, Operator.LESS_OR_EQUALS, User.class)) {
+            System.out.println(age.toString());
         }
-        System.out.println((System.currentTimeMillis() - start) + "ms.");
-
         //storage.stop();
     }
 

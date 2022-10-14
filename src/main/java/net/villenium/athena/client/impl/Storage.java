@@ -12,6 +12,7 @@ import net.villenium.athena.AthenaService;
 import net.villenium.athena.client.DataOptions;
 import net.villenium.athena.client.IAthenaStorage;
 import net.villenium.athena.client.IAthenaStorageAsync;
+import net.villenium.athena.client.util.Operator;
 
 import java.util.List;
 
@@ -81,13 +82,14 @@ public class Storage implements IAthenaStorage {
     }
 
     @Override
-    public <T> List<T> findAll(String field, String value, Class<T> type) {
+    public <T> List<T> findAll(String field, Object value, Operator operator, Class<T> type) {
         List<T> list = Lists.newArrayList();
         AthenaService.FindAllRequest request = AthenaService.FindAllRequest
                 .newBuilder()
                 .setStorage(storageName)
                 .setField(field)
-                .setValue(value)
+                .setValue(gson.toJson(value))
+                .setOperator(operator.name())
                 .build();
         stub.withCallCredentials(credentials).findAll(request).forEachRemaining(response -> {
             list.add(gson.fromJson(response.getData(), type));

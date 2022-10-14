@@ -1,6 +1,7 @@
 package net.villenium.athena.client;
 
 import net.villenium.athena.client.util.Constant;
+import net.villenium.athena.client.util.Operator;
 
 import java.util.List;
 
@@ -71,13 +72,14 @@ public interface IAthenaStorage {
     <T> List<T> getTopByStat(String stat, int count, boolean ascending, Class<T> type);
 
     /**
-     * Получить все объекты поле которых равняется необходимому значению.
-     *
+     * Получить все объекты поле которых равняется необходимому значению (числа).
      * @param field поле.
      * @param value значение.
+     * @param operator оператор сравнивания.
      * @return все объекты коллекции поле которого равняется значению.
      */
-    <T> List<T> findAll(String field, String value, Class<T> type);
+    <T> List<T> findAll(String field, Object value, Operator operator, Class<T> type);
+
 
     /**
      * Асинхронные методы для работы с хранилищем.
