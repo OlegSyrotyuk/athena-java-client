@@ -2,7 +2,7 @@ package net.villenium.athena.client;
 
 import com.google.gson.Gson;
 
-public interface IAthenaStorageBuilder {
+public interface IAthenaStorageBuilder<T> {
 
     /**
      * Создать билдер хранилища.
@@ -10,7 +10,7 @@ public interface IAthenaStorageBuilder {
      * @param name имя.
      * @return этот билдер
      */
-    IAthenaStorageBuilder create(String name);
+    IAthenaStorageBuilder<T> create(String name);
 
     /**
      * Установить Gson.
@@ -18,13 +18,21 @@ public interface IAthenaStorageBuilder {
      * @param gson Gson.
      * @return этот билдер
      */
-    IAthenaStorageBuilder setGson(Gson gson);
+    IAthenaStorageBuilder<T> setGson(Gson gson);
+
+    /**
+     * Установить тип хранилища.
+     *
+     * @param type тип.
+     * @return этот билдер.
+     */
+    IAthenaStorageBuilder<T> setType(Class<T> type);
 
     /**
      * Создать объект хранилища.
      *
      * @return хранилище.
      */
-    IAthenaStorage build();
+    IAthenaStorage<T> build();
 
 }

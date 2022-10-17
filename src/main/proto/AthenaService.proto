@@ -39,7 +39,6 @@ message FindAllRequest {
 service Athena {
   rpc createStorage(CreateRequest) returns (google.protobuf.Empty);
   rpc upsert(SetObjectRequest) returns (google.protobuf.Empty);
-  rpc getObject(GetObjectRequest) returns (GetObjectResponse);
   rpc getTopByStat(GetTopByStatRequest) returns (stream GetObjectResponse);
   rpc findAll(FindAllRequest) returns (stream GetObjectResponse);
 }

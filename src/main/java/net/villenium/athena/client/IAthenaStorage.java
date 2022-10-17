@@ -5,7 +5,14 @@ import net.villenium.athena.client.util.Constant;
 
 import java.util.List;
 
-public interface IAthenaStorage {
+public interface IAthenaStorage<T> {
+
+    /**
+     * Получить тип хранилища.
+     *
+     * @return тип хранилища.
+     */
+    Class<T> getType();
 
     /**
      * Начать общение с сервисом.
@@ -20,27 +27,6 @@ public interface IAthenaStorage {
      * Остановить общение с сервисом.
      */
     void stop();
-
-    /**
-     * Получение объекта из хранилища.
-     *
-     * @param id      айди объекта.
-     * @param type    тип объекта.
-     * @param options параметры.
-     * @return объект из хранилища.
-     */
-    <T> T getObject(String id, Class<T> type, DataOptions options);
-
-    /**
-     * Получение объекта из хранилища с базовыми опциями.
-     *
-     * @param id   айди объекта.
-     * @param type тип объекта.
-     * @return объект из хранилища.
-     */
-    default <T> T getObject(String id, Class<T> type) {
-        return getObject(id, type, Constant.DEFAULT_OPTIONS);
-    }
 
     /**
      * Обновление или установка объекта в хранилище.
@@ -69,27 +55,34 @@ public interface IAthenaStorage {
      * @param ascending true - от большего к меньшему, false - от меньшего к большему.
      * @return список из объектов.
      */
-    <T> List<T> getTopByStat(String stat, int count, boolean ascending, Class<T> type);
+    List<T> getTopByStat(String stat, int count, boolean ascending);
 
     /**
      * Получить все объекты поле которых равняется необходимому значению (числа).
+     *
      * @param request параметры запроса.
      * @return все объекты коллекции поле которого равняется значению.
      */
-    <T> List<T> findAll(FindRequest request, Class<T> type);
+    List<T> findAll(FindRequest request);
 
     /**
      * Вызвать билдер запросов.
-     * @param type тип объекта.
+     *
      * @return билдер.
      */
-    <T> IFindRequestBuilder findAll(Class<T> type);
+    IFindRequestBuilder<T> find();
 
     /**
      * Асинхронные методы для работы с хранилищем.
      *
      * @return реализация асинхронного хранилища.
      */
-    IAthenaStorageAsync async();
+    IAthenaStorageAsync<T> async();
+
+    /**
+     * Создать новый пул объектов.
+     * @return пул объектов.
+     */
+    ObjectPool<T> newObjectPool();
 
 }

@@ -1,37 +1,46 @@
 package net.villenium.athena.client;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import net.villenium.athena.client.impl.StorageBuilder;
-import net.villenium.athena.client.impl.find.FindRequestBuilder;
 import net.villenium.athena.client.util.Constant;
 import net.villenium.athena.client.util.Operator;
-
-import java.security.SecureRandom;
-import java.util.List;
-import java.util.Map;
 
 public class Test {
 
     public static void main(String[] args) {
-        IAthenaStorage storage = new StorageBuilder()
+
+        IAthenaStorage<User> storage = new StorageBuilder<User>()
                 .create("users")
                 .setGson(Constant.ATHENA_DEFAULT_GSON)
+                .setType(User.class)
                 .build();
         storage.start("localhost:1000", "test1", "1234567");
 
-        List<User> list = storage.findAll(User.class)
-                .where("age", 7, Operator.LESS)
-                .where("xuy", 16, Operator.MORE_OR_EQUALS)
-                .count(1)
-                .execute();
-        for (User user : list) {
-            System.out.println(user);
-        }
+        ObjectPool<User> pool = storage.newObjectPool();
+        pool.setDefaultObject(new User(
+                null,
+                10,
+                5,
+                1000));
 
-        storage.findAll(User.class)
-                .whereAnd("age", 10, Operator.MORE_OR_EQUALS)
-                .and(18, Operator.LESS_OR_EQUALS);
+        storage.find()
+                .whereEquals("rarity", "UNCOMMON")
+                .whereAnd("min_physical_damage", 10, Operator.MORE_OR_EQUALS)
+                .and(35, Operator.LESS_OR_EQUALS)
+                .where("critical_chance", 21, Operator.MORE_OR_EQUALS)
+                .count(15)
+                .findAll();
+//        List<User> list = storage.findAll(User.class)
+//                .where("age", 7, Operator.LESS)
+//                .where("xuy", 16, Operator.MORE_OR_EQUALS)
+//                .count(1)
+//                .execute();
+//        for (User user : list) {
+//            System.out.println(user);
+//        }
+//
+//        storage.findAll(User.class)
+//                .whereAnd("age", 10, Operator.MORE_OR_EQUALS)
+//                .and(18, Operator.LESS_OR_EQUALS);
 //
 //        User mother = new User("mother", 6, 14);
 //        User mother2 = new User("mother2", 3, 15);
@@ -53,15 +62,5 @@ public class Test {
     }
 
     //{"age":{"$gt":10,"$lt":19}}
-
-    public static String generateToken(int count) {
-        String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
-        SecureRandom RANDOM = new SecureRandom();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < count; ++i) {
-            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
-        }
-        return sb.toString();
-    }
 
 }

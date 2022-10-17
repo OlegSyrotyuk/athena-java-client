@@ -13,12 +13,13 @@ import net.villenium.athena.client.IAthenaStorageAsync;
 import net.villenium.athena.client.util.Helpers;
 
 @RequiredArgsConstructor
-public class StorageAsync implements IAthenaStorageAsync {
+public class StorageAsync<T> implements IAthenaStorageAsync<T> {
 
     private final AthenaGrpc.AthenaStub stub;
     private final CallCredentials credentials;
     private final String storageName;
     private final Gson gson;
+    private final Class<T> type;
 
     @Override
     public void upsert(String id, Object data, DataOptions options) {
@@ -28,34 +29,9 @@ public class StorageAsync implements IAthenaStorageAsync {
                 .setData(gson.toJson(data))
                 .setOptions(gson.toJson(options))
                 .build();
-        stub.withCallCredentials(credentials).upsert(request, new StreamObserver<Empty>() {
-            @Override
-            public void onNext(Empty value) {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onCompleted() {
-
-            }
+        Helpers.<Empty>unaryAsyncCall(streamObserver -> {
+            stub.withCallCredentials(credentials).upsert(request, streamObserver);
         });
-    }
-
-    @SneakyThrows
-    @Override
-    public <T> T getObject(String id, Class<T> type, DataOptions options) {
-        AthenaService.GetObjectRequest request = AthenaService.GetObjectRequest.newBuilder()
-                .setStorage(storageName)
-                .setId(id)
-                .setOptions(gson.toJson(options))
-                .build();
-        return gson.fromJson(Helpers.<AthenaService.GetObjectResponse>unaryAsyncCall(
-                observer -> stub.withCallCredentials(credentials).getObject(request, observer)).get().getData(), type);
     }
 
 }

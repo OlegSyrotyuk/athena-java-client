@@ -9,35 +9,38 @@ import java.util.List;
  * Использовать where можно множество раз, тем самым позволяя использовать гибкий поиск.
  * Объекты возвращаемые этим запросом НЕ кэшируются.
  */
-public interface IFindRequestBuilder {
+public interface IFindRequestBuilder<T> {
 
     /**
      * Поиск по значению поля.
-     * @param field поле.
-     * @param value значение.
+     *
+     * @param field    поле.
+     * @param value    значение.
      * @param operator оператор сравнения. (для текстовых значений использовать только EQUALS и NOT_EQUALS).
      * @return этот билдер.
      * Например: where("age", 10, Operator.LESS_OR_EQUALS) вернет всех чей возраст меньше или равен десяти.
      */
-    IFindRequestBuilder where(String field, Object value, Operator operator);
+    IFindRequestBuilder<T> where(String field, Object value, Operator operator);
 
     /**
      * Сокращенный вызов оператора равно.
+     *
      * @param field поле.
      * @param value значение.
      * @return этот билдер.
      */
-    default IFindRequestBuilder whereEquals(String field, Object value) {
+    default IFindRequestBuilder<T> whereEquals(String field, Object value) {
         return where(field, value, Operator.EQUALS);
     }
 
     /**
      * Сокращенный вызов оператора не равно.
+     *
      * @param field поле.
      * @param value значение.
      * @return этот билдер.
      */
-    default IFindRequestBuilder whereNotEquals(String field, Object value) {
+    default IFindRequestBuilder<T> whereNotEquals(String field, Object value) {
         return where(field, value, Operator.NOT_EQUALS);
     }
 
@@ -45,64 +48,92 @@ public interface IFindRequestBuilder {
      * Поиск значения по полю с возможностью добавить для значения несколько условий.
      * К примеру findAll().whereAnd("age", 10, Operator.MORE_OR_EQUALS).and(18, Operator.LESS_OR_EQUALS)
      * Вернет всех пользователей чей возраст больше или равен десяти, но при этом не более чем восемнадцать.
-     * @param field поле.
-     * @param value значение.
+     *
+     * @param field    поле.
+     * @param value    значение.
      * @param operator оператор сравнения. (для текстовых значений использовать только EQUALS и NOT_EQUALS).
      * @return этот билдер.
      */
-    IAndRequest whereAnd(String field, Object value, Operator operator);
+    IAndRequest<T> whereAnd(String field, Object value, Operator operator);
 
     /**
      * Сокращенный вызов оператора равно с возможностью добавить несколько условий.
+     *
      * @param field поле.
      * @param value значение.
      * @return этот билдер.
      */
-    default IAndRequest whereAndEquals(String field, Object value) {
+    default IAndRequest<T> whereAndEquals(String field, Object value) {
         return whereAnd(field, value, Operator.EQUALS);
     }
 
     /**
      * Сокращенный вызов оператора не равно с возможностью добавить несколько условий.
+     *
      * @param field поле.
      * @param value значение.
      * @return этот билдер.
      */
-    default IAndRequest whereAndNotEquals(String field, Object value) {
+    default IAndRequest<T> whereAndNotEquals(String field, Object value) {
         return whereAnd(field, value, Operator.NOT_EQUALS);
     }
 
     /**
      * Установить желаемое количество полученных объектов.
+     *
      * @param count количество.
      * @return этот билдер.
      */
-    IFindRequestBuilder count(int count);
+    IFindRequestBuilder<T> count(int count);
 
     /**
-     * Выполнить запрос.
+     * Получить первый подходящий ответ.
+     *
+     * @return объект.
+     */
+    T first();
+
+    /**
+     * Получить все подходящие объекты.
+     *
      * @return список объектов.
      */
-    <T> List<T> execute();
+    List<T> findAll();
 
-    interface IAndRequest {
+    interface IAndRequest<T> {
 
         /**
          * Описание в whereAnd
-         * @param value значение.
+         *
+         * @param value    значение.
          * @param operator оператор сравнивания.
          * @return этот билдер.
          */
-        IAndRequest and(Object value, Operator operator);
+        IAndRequest<T> and(Object value, Operator operator);
 
         /**
          * Поиск по значению поля с выходом к IFindRequestBuilder.
-         * @param field поле.
-         * @param value значение.
+         *
+         * @param field    поле.
+         * @param value    значение.
          * @param operator оператор сравнивания.
          * @return билдер запроса.
          */
-        IFindRequestBuilder where(String field, Object value, Operator operator);
+        IFindRequestBuilder<T> where(String field, Object value, Operator operator);
+
+        /**
+         * Получить первый подходящий ответ.
+         *
+         * @return объект.
+         */
+        T first();
+
+        /**
+         * Получить все подходящие объекты.
+         *
+         * @return список объектов.
+         */
+        List<T> findAll();
 
     }
 
