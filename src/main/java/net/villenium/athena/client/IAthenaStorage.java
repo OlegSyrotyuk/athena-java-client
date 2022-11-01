@@ -1,7 +1,7 @@
 package net.villenium.athena.client;
 
 import net.villenium.athena.client.impl.find.FindRequest;
-import net.villenium.athena.client.util.Constant;
+import net.villenium.athena.client.util.Athena;
 
 import java.util.List;
 
@@ -13,20 +13,6 @@ public interface IAthenaStorage<T> {
      * @return тип хранилища.
      */
     Class<T> getType();
-
-    /**
-     * Начать общение с сервисом.
-     *
-     * @param target host:port
-     * @param client имя клиента.
-     * @param key    ключ авторизации.
-     */
-    void start(String target, String client, String key);
-
-    /**
-     * Остановить общение с сервисом.
-     */
-    void stop();
 
     /**
      * Обновление или установка объекта в хранилище.
@@ -44,7 +30,7 @@ public interface IAthenaStorage<T> {
      * @param data объект.
      */
     default void upsert(String id, Object data) {
-        upsert(id, data, Constant.DEFAULT_OPTIONS);
+        upsert(id, data, Athena.DEFAULT_OPTIONS);
     }
 
     /**
@@ -77,10 +63,12 @@ public interface IAthenaStorage<T> {
      *
      * @return реализация асинхронного хранилища.
      */
+    @Deprecated
     IAthenaStorageAsync<T> async();
 
     /**
      * Создать новый пул объектов.
+     *
      * @return пул объектов.
      */
     ObjectPool<T> newObjectPool();

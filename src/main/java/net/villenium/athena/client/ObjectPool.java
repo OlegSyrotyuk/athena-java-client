@@ -4,6 +4,7 @@ public interface ObjectPool<T> {
 
     /**
      * Установить базовый объект пула.
+     *
      * @param object экземпляр объекта с базовыми значениями.
      */
     void setDefaultObject(T object);

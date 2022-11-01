@@ -15,5 +15,4 @@ public class User {
     private int xuy;
     @Name(name = "min_damage")
     private int minimalDamage;
-
 }

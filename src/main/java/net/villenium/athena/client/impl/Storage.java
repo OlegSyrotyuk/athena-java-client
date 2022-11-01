@@ -4,14 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import net.villenium.athena.AthenaGrpc;
 import net.villenium.athena.AthenaService;
 import net.villenium.athena.client.*;
 import net.villenium.athena.client.impl.async.StorageAsync;
-import net.villenium.athena.client.impl.auth.JwtCredential;
 import net.villenium.athena.client.impl.find.FindRequest;
 import net.villenium.athena.client.impl.find.FindRequestBuilder;
 import net.villenium.athena.client.impl.pool.AthenaObjectPool;
@@ -26,30 +23,30 @@ public class Storage<T> implements IAthenaStorage<T> {
 
     private final Class<T> type;
     private ManagedChannel channel;
-    private AthenaGrpc.AthenaBlockingStub stub;
+    private final AthenaGrpc.AthenaBlockingStub stub;
 
-    private CallCredentials credentials;
+    private final CallCredentials credentials;
 
     @Override
     public Class<T> getType() {
         return type;
     }
 
-    @Override
-    public void start(String target, String client, String key) {
-        credentials = new JwtCredential(client, key);
-        channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-        stub = AthenaGrpc.newBlockingStub(channel);
-        AthenaService.CreateRequest request = AthenaService.CreateRequest.newBuilder()
-                .setName(storageName)
-                .build();
-        stub.withCallCredentials(credentials).createStorage(request);
-    }
-
-    @Override
-    public void stop() {
-        channel.shutdownNow();
-    }
+//    @Override
+//    public void start(String target, String client, String key) {
+//        credentials = new JwtCredential(client, key);
+//        channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+//        stub = AthenaGrpc.newBlockingStub(channel);
+//        AthenaService.CreateRequest request = AthenaService.CreateRequest.newBuilder()
+//                .setName(storageName)
+//                .build();
+//        stub.withCallCredentials(credentials).createStorage(request);
+//    }
+//
+//    @Override
+//    public void stop() {
+//        channel.shutdownNow();
+//    }
 
     @Override
     public void upsert(String id, Object data, DataOptions options) {

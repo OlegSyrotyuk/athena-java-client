@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.villenium.athena.client.IAthenaStorage;
 import net.villenium.athena.client.IFindRequestBuilder;
-import net.villenium.athena.client.util.Constant;
+import net.villenium.athena.client.util.Athena;
 import net.villenium.athena.client.util.Operator;
 
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class FindRequestBuilder<T> implements IFindRequestBuilder<T> {
 
     @Override
     public List<T> findAll() {
-        return storage.findAll(new FindRequest(Constant.ATHENA_DEFAULT_GSON.toJson(conditions), count));
+        return storage.findAll(new FindRequest(Athena.ATHENA_DEFAULT_GSON.toJson(conditions), count));
     }
 
     @AllArgsConstructor

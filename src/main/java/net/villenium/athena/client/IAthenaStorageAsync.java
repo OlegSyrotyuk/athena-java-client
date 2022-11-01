@@ -1,6 +1,6 @@
 package net.villenium.athena.client;
 
-import net.villenium.athena.client.util.Constant;
+import net.villenium.athena.client.util.Athena;
 
 public interface IAthenaStorageAsync<T> {
 
@@ -20,7 +20,7 @@ public interface IAthenaStorageAsync<T> {
      * @param data объект.
      */
     default void upsert(String id, T data) {
-        upsert(id, data, Constant.DEFAULT_OPTIONS);
+        upsert(id, data, Athena.DEFAULT_OPTIONS);
     }
 
 }
