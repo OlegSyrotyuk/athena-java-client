@@ -1,6 +1,7 @@
 package net.villenium.athena.client;
 
 import net.villenium.athena.client.impl.find.FindRequest;
+import net.villenium.athena.client.impl.pool.ReadOnlyObjectPool;
 import net.villenium.athena.client.util.Athena;
 
 import java.util.List;
@@ -72,5 +73,11 @@ public interface IAthenaStorage<T> {
      * @return пул объектов.
      */
     ObjectPool<T> newObjectPool();
+
+    /**
+     * Создать новый пул объектов с которого можно только читать объекты.
+     * @return пул объектов.
+     */
+    IReadOnlyObjectPool<T> newReadOnlyObjectPool();
 
 }

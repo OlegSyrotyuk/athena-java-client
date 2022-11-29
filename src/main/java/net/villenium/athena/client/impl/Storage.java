@@ -12,6 +12,7 @@ import net.villenium.athena.client.impl.async.StorageAsync;
 import net.villenium.athena.client.impl.find.FindRequest;
 import net.villenium.athena.client.impl.find.FindRequestBuilder;
 import net.villenium.athena.client.impl.pool.AthenaObjectPool;
+import net.villenium.athena.client.impl.pool.ReadOnlyObjectPool;
 
 import java.util.List;
 
@@ -102,5 +103,10 @@ public class Storage<T> implements IAthenaStorage<T> {
     @Override
     public ObjectPool<T> newObjectPool() {
         return new AthenaObjectPool<>(this);
+    }
+
+    @Override
+    public ReadOnlyObjectPool<T> newReadOnlyObjectPool() {
+        return new ReadOnlyObjectPool<>(this);
     }
 }
