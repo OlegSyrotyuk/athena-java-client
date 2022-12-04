@@ -13,4 +13,10 @@ public interface IReadOnlyObjectPool<T> {
      */
     @Nullable T get(String id);
 
+    /**
+     * Убрать объект из кэша.
+     * @param id айди объекта.
+     */
+    void invalidate(String id);
+
 }

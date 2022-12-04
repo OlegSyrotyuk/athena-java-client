@@ -28,4 +28,9 @@ public class ReadOnlyObjectPool<T> implements IReadOnlyObjectPool<T> {
         }
         return object;
     }
+
+    @Override
+    public void invalidate(String id) {
+        objectPool.remove(id);
+    }
 }

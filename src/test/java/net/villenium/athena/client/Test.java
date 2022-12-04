@@ -11,14 +11,11 @@ public class Test {
         StorageManager manager = new StorageManager();
         manager.start("localhost:2202", "client", "123456");
         IAthenaStorage<User> storage = manager.create("users", User.class);
-        IReadOnlyObjectPool<User> objectPool = storage.newReadOnlyObjectPool();
-        //objectPool.setDefaultObject(new User(null, 10, 10, 10));
-        User larr4k = objectPool.get("Larr4k");
-        System.out.println(larr4k);
-        User user = objectPool.get("0xBukkitCoder");
-        System.out.println(user);
-        larr4k.setAge(19);
-        //objectPool.save(larr4k.getName());
+        ObjectPool<User> objectPool = storage.newObjectPool();
+        objectPool.setDefaultObject(new User(null, 18, 10, 100));
+        User test = objectPool.get("Test");
+        test.setAge(43);
+        objectPool.save(test.getName());
         manager.stop();
 
         storage.find()
