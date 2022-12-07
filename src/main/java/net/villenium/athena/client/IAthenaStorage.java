@@ -60,6 +60,14 @@ public interface IAthenaStorage<T> {
     IFindRequestBuilder<T> find();
 
     /**
+     * Получить объект по айди (Ищет объект независимо от регистра айди).
+     *
+     * @param id айди объекта.
+     * @return объект или null.
+     */
+    T findById(String id);
+
+    /**
      * Асинхронные методы для работы с хранилищем.
      *
      * @return реализация асинхронного хранилища.

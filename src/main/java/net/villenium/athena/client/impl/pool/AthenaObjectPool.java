@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import net.villenium.athena.client.IAthenaStorage;
 import net.villenium.athena.client.ObjectPool;
 import net.villenium.athena.client.annotation.Id;
+import net.villenium.athena.client.util.Operator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +32,8 @@ public class AthenaObjectPool<T> implements ObjectPool<T> {
         T object = objectPool.getOrDefault(id, null);
         if (DEFAULT_OBJECT != null) {
             if (object == null) {
-                T first = storage.find()
-                        .whereEquals("_id", id)
-                        .first();
+                T first = storage.findById(id);
+                System.out.println(first);
                 if (first != null) {
                     object = first;
                 } else {

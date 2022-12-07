@@ -96,6 +96,18 @@ public class Storage<T> implements IAthenaStorage<T> {
     }
 
     @Override
+    public T findById(String id) {
+        AthenaService.GetObjectRequest request = AthenaService.GetObjectRequest
+                .newBuilder()
+                .setStorage(storageName)
+                .setId(id)
+                .build();
+        AthenaService.GetObjectResponse response = stub.withCallCredentials(credentials).findById(request);
+        return gson.fromJson(response.getData(), getType());
+    }
+
+
+    @Override
     public IAthenaStorageAsync<T> async() {
         return new StorageAsync<>(AthenaGrpc.newStub(channel), credentials, storageName, gson, type);
     }

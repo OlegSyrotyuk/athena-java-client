@@ -41,5 +41,6 @@ service Athena {
   rpc upsert(SetObjectRequest) returns (google.protobuf.Empty);
   rpc getTopByStat(GetTopByStatRequest) returns (stream GetObjectResponse);
   rpc findAll(FindAllRequest) returns (stream GetObjectResponse);
+  rpc findById(GetObjectRequest) returns (GetObjectResponse);
 }
 
