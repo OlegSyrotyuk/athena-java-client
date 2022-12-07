@@ -33,7 +33,6 @@ public class AthenaObjectPool<T> implements ObjectPool<T> {
         if (DEFAULT_OBJECT != null) {
             if (object == null) {
                 T first = storage.findById(id);
-                System.out.println(first);
                 if (first != null) {
                     object = first;
                 } else {
