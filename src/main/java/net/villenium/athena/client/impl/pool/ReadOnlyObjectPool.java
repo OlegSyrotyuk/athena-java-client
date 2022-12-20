@@ -20,9 +20,7 @@ public class ReadOnlyObjectPool<T> implements IReadOnlyObjectPool<T> {
     public @Nullable T get(String id) {
         T object = objectPool.getOrDefault(id, null);
         if (object == null) {
-            object = storage.find()
-                    .whereEquals("_id", id)
-                    .first();
+            object = storage.findById(id);
             if (object != null)
                 objectPool.put(id, object);
         }
