@@ -67,4 +67,9 @@ public class AthenaObjectPool<T> implements ObjectPool<T> {
             save(object, unload);
         });
     }
+
+    @Override
+    public void invalidate(String id) {
+        objectPool.remove(id);
+    }
 }
