@@ -1,8 +1,6 @@
 package net.villenium.athena.client;
 
-import com.google.gson.Gson;
-
-public interface StorageManager {
+public interface IStorageManager {
 
     /**
      * Начать общение с сервисом.
@@ -23,10 +21,9 @@ public interface StorageManager {
      *
      * @param name имя хранилища.
      * @param type тип объектов хранилища.
-     * @param gson сериализатор.
      * @param <T>  тип.
      * @return хранилище
      */
-    <T> Storage<T> create(String name, Gson gson, Class<T> type);
+    <T> IAthenaStorage<T> create(String name, Class<T> type);
 
 }

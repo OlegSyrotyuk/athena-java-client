@@ -1,4 +1,4 @@
-package net.villenium.athena.client.impl.athena;
+package net.villenium.athena.client.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -8,15 +8,16 @@ import lombok.RequiredArgsConstructor;
 import net.villenium.athena.AthenaGrpc;
 import net.villenium.athena.AthenaService;
 import net.villenium.athena.client.*;
-import net.villenium.athena.client.impl.find.AthenaFindRequestBuilder;
+import net.villenium.athena.client.impl.async.StorageAsync;
+import net.villenium.athena.client.impl.find.FindRequest;
+import net.villenium.athena.client.impl.find.FindRequestBuilder;
 import net.villenium.athena.client.impl.pool.AthenaObjectPool;
-import net.villenium.athena.client.impl.pool.AthenaReadOnlyObjectPool;
+import net.villenium.athena.client.impl.pool.ReadOnlyObjectPool;
 
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
-public class AthenaStorage<T> implements Storage<T> {
+public class Storage<T> implements IAthenaStorage<T> {
 
     private final String storageName;
     private final Gson gson;
@@ -31,6 +32,22 @@ public class AthenaStorage<T> implements Storage<T> {
     public Class<T> getType() {
         return type;
     }
+
+//    @Override
+//    public void start(String target, String client, String key) {
+//        credentials = new JwtCredential(client, key);
+//        channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+//        stub = AthenaGrpc.newBlockingStub(channel);
+//        AthenaService.CreateRequest request = AthenaService.CreateRequest.newBuilder()
+//                .setName(storageName)
+//                .build();
+//        stub.withCallCredentials(credentials).createStorage(request);
+//    }
+//
+//    @Override
+//    public void stop() {
+//        channel.shutdownNow();
+//    }
 
     @Override
     public void upsert(String id, Object data, DataOptions options) {
@@ -74,8 +91,8 @@ public class AthenaStorage<T> implements Storage<T> {
     }
 
     @Override
-    public RequestBuilder<T> find() {
-        return new AthenaFindRequestBuilder<>(this);
+    public IFindRequestBuilder<T> find() {
+        return new FindRequestBuilder<>(this);
     }
 
     @Override
@@ -91,12 +108,17 @@ public class AthenaStorage<T> implements Storage<T> {
 
 
     @Override
-    public ObjectPool<T> newObjectPool(Map<String, T> source) {
-        return new AthenaObjectPool<T>(this, source);
+    public IAthenaStorageAsync<T> async() {
+        return new StorageAsync<>(AthenaGrpc.newStub(channel), credentials, storageName, gson, type);
     }
 
     @Override
-    public ReadOnlyObjectPool<T> newReadOnlyObjectPool(Map<String, T> source) {
-        return new AthenaReadOnlyObjectPool<T>(this, source);
+    public ObjectPool<T> newObjectPool() {
+        return new AthenaObjectPool<>(this);
+    }
+
+    @Override
+    public ReadOnlyObjectPool<T> newReadOnlyObjectPool() {
+        return new ReadOnlyObjectPool<>(this);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * Использовать where можно множество раз, тем самым позволяя использовать гибкий поиск.
  * Объекты возвращаемые этим запросом НЕ кэшируются.
  */
-public interface RequestBuilder<T> {
+public interface IFindRequestBuilder<T> {
 
     /**
      * Поиск по значению поля.
@@ -20,7 +20,7 @@ public interface RequestBuilder<T> {
      * @return этот билдер.
      * Например: where("age", 10, Operator.LESS_OR_EQUALS) вернет всех чей возраст меньше или равен десяти.
      */
-    RequestBuilder<T> where(String field, Object value, Operator operator);
+    IFindRequestBuilder<T> where(String field, Object value, Operator operator);
 
     /**
      * Сокращенный вызов оператора равно.
@@ -29,7 +29,7 @@ public interface RequestBuilder<T> {
      * @param value значение.
      * @return этот билдер.
      */
-    default RequestBuilder<T> whereEquals(String field, Object value) {
+    default IFindRequestBuilder<T> whereEquals(String field, Object value) {
         return where(field, value, Operator.EQUALS);
     }
 
@@ -40,7 +40,7 @@ public interface RequestBuilder<T> {
      * @param value значение.
      * @return этот билдер.
      */
-    default RequestBuilder<T> whereNotEquals(String field, Object value) {
+    default IFindRequestBuilder<T> whereNotEquals(String field, Object value) {
         return where(field, value, Operator.NOT_EQUALS);
     }
 
@@ -84,7 +84,7 @@ public interface RequestBuilder<T> {
      * @param count количество.
      * @return этот билдер.
      */
-    RequestBuilder<T> count(int count);
+    IFindRequestBuilder<T> count(int count);
 
     /**
      * Получить первый подходящий ответ.
@@ -119,7 +119,7 @@ public interface RequestBuilder<T> {
          * @param operator оператор сравнивания.
          * @return билдер запроса.
          */
-        RequestBuilder<T> where(String field, Object value, Operator operator);
+        IFindRequestBuilder<T> where(String field, Object value, Operator operator);
 
         /**
          * Получить первый подходящий ответ.

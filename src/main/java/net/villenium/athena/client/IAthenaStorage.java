@@ -1,12 +1,12 @@
 package net.villenium.athena.client;
 
-import com.google.common.collect.Maps;
+import net.villenium.athena.client.impl.find.FindRequest;
+import net.villenium.athena.client.impl.pool.ReadOnlyObjectPool;
 import net.villenium.athena.client.util.Athena;
 
 import java.util.List;
-import java.util.Map;
 
-public interface Storage<T> {
+public interface IAthenaStorage<T> {
 
     /**
      * Получить тип хранилища.
@@ -57,7 +57,7 @@ public interface Storage<T> {
      *
      * @return билдер.
      */
-    RequestBuilder<T> find();
+    IFindRequestBuilder<T> find();
 
     /**
      * Получить объект по айди (Ищет объект независимо от регистра айди).
@@ -68,27 +68,24 @@ public interface Storage<T> {
     T findById(String id);
 
     /**
+     * Асинхронные методы для работы с хранилищем.
+     *
+     * @return реализация асинхронного хранилища.
+     */
+    @Deprecated
+    IAthenaStorageAsync<T> async();
+
+    /**
      * Создать новый пул объектов.
      *
-     * @param source реализация Map.
      * @return пул объектов.
      */
-    ObjectPool<T> newObjectPool(Map<String, T> source);
-
-    default ObjectPool<T> newObjectPool() {
-        return newObjectPool(Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER));
-    }
+    ObjectPool<T> newObjectPool();
 
     /**
      * Создать новый пул объектов с которого можно только читать объекты.
-     *
-     * @param source реализация Map.
      * @return пул объектов.
      */
-    ReadOnlyObjectPool<T> newReadOnlyObjectPool(Map<String, T> source);
-
-    default ReadOnlyObjectPool<T> newReadOnlyObjectPool() {
-        return newReadOnlyObjectPool(Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER));
-    }
+    IReadOnlyObjectPool<T> newReadOnlyObjectPool();
 
 }

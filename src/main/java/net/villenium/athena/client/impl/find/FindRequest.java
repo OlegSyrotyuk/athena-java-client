@@ -1,4 +1,4 @@
-package net.villenium.athena.client;
+package net.villenium.athena.client.impl.find;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

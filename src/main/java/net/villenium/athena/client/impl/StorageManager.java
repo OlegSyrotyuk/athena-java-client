@@ -1,17 +1,16 @@
-package net.villenium.athena.client.impl.athena;
+package net.villenium.athena.client.impl;
 
-import com.google.gson.Gson;
 import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import net.villenium.athena.AthenaGrpc;
 import net.villenium.athena.AthenaService;
-import net.villenium.athena.client.Storage;
-import net.villenium.athena.client.StorageManager;
-import net.villenium.athena.client.impl.athena.auth.JwtCredential;
+import net.villenium.athena.client.IAthenaStorage;
+import net.villenium.athena.client.IStorageManager;
+import net.villenium.athena.client.impl.auth.JwtCredential;
 import net.villenium.athena.client.util.Athena;
 
-public class AthenaStorageManager implements StorageManager {
+public class StorageManager implements IStorageManager {
 
     private ManagedChannel channel;
     private AthenaGrpc.AthenaBlockingStub stub;
@@ -35,11 +34,11 @@ public class AthenaStorageManager implements StorageManager {
     }
 
     @Override
-    public <T> Storage<T> create(String name, Gson gson, Class<T> type) {
+    public <T> IAthenaStorage<T> create(String name, Class<T> type) {
         AthenaService.CreateRequest request = AthenaService.CreateRequest.newBuilder()
                 .setName(name)
                 .build();
         stub.withCallCredentials(credentials).createStorage(request);
-        return new AthenaStorage<T>(name, gson, type, stub, credentials);
+        return new Storage<T>(name, Athena.ATHENA_DEFAULT_GSON, type, stub, credentials);
     }
 }
