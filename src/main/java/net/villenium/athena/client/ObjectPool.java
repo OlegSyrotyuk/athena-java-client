@@ -1,5 +1,7 @@
 package net.villenium.athena.client;
 
+import java.util.concurrent.TimeUnit;
+
 public interface ObjectPool<T> {
 
     /**
@@ -8,6 +10,20 @@ public interface ObjectPool<T> {
      * @param object экземпляр объекта с базовыми значениями.
      */
     void setDefaultObject(T object);
+
+    /**
+     * Включить ли авто сохранение объектов в хранилище.
+     * @param value значение.
+     */
+    void setAutoSave(boolean value);
+
+    /**
+     * Время между авто сохранениями.
+     * @param value значение в минутах.
+     */
+    void setAutoSaveTime(long value);
+
+    void setDebug(boolean value);
 
     /**
      * Получить объект из кэша.

@@ -1,29 +1,56 @@
 package net.villenium.athena.client.impl.pool;
 
-import com.google.common.collect.Maps;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.SneakyThrows;
-import net.villenium.athena.client.IAthenaStorage;
 import net.villenium.athena.client.ObjectPool;
+import net.villenium.athena.client.Storage;
 import net.villenium.athena.client.annotation.Id;
-import net.villenium.athena.client.util.Operator;
+import net.villenium.athena.client.impl.athena.AthenaStorage;
+import net.villenium.athena.client.util.Athena;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class AthenaObjectPool<T> implements ObjectPool<T> {
 
-    private final Map<String, T> objectPool = Maps.newConcurrentMap();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final IAthenaStorage<T> storage;
+    private final Storage<T> storage;
+    private final Map<String, T> objectPool;
     private T DEFAULT_OBJECT;
+    @Getter
+    private boolean autoSave = true;
+    @Getter
+    private long autoSaveTime = 10L;
+    @Getter
+    @Setter
+    private boolean debug;
+
+    {
+        if (isAutoSave()) {
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> saveAll(false), autoSaveTime, autoSaveTime, TimeUnit.MINUTES);
+        }
+    }
 
     @Override
     public void setDefaultObject(T object) {
         DEFAULT_OBJECT = object;
+    }
+
+    @Override
+    public void setAutoSave(boolean value) {
+        autoSave = value;
+    }
+
+    @Override
+    public void setAutoSaveTime(long value) {
+        autoSaveTime = value;
     }
 
     @SneakyThrows
@@ -36,15 +63,15 @@ public class AthenaObjectPool<T> implements ObjectPool<T> {
                 if (first != null) {
                     object = first;
                 } else {
-                    for (Field field : DEFAULT_OBJECT.getClass().getDeclaredFields()) {
+                    object = Athena.ATHENA_DEFAULT_GSON.fromJson(Athena.ATHENA_DEFAULT_GSON.toJson(DEFAULT_OBJECT), storage.getType());
+                    for (Field field : object.getClass().getDeclaredFields()) {
                         if (field.isAnnotationPresent(Id.class)) {
                             field.setAccessible(true);
-                            field.set(DEFAULT_OBJECT, id);
+                            field.set(object, id);
                             field.setAccessible(false);
                         }
                     }
-                    object = DEFAULT_OBJECT;
-                    storage.upsert(id, DEFAULT_OBJECT);
+                    storage.upsert(id, object);
                 }
                 objectPool.put(id, object);
             }
@@ -56,20 +83,37 @@ public class AthenaObjectPool<T> implements ObjectPool<T> {
 
     @Override
     public void save(String id, boolean unload) {
-        storage.upsert(id, get(id));
-        if (unload)
+        T object = get(id);
+        debug("Saving object with id " + id);
+        debug(object.toString());
+        storage.upsert(id, object);
+        debug("Object with id " + id + " saved.");
+        debug(object.toString());
+        if (unload) {
+            debug("Invalidate object with id " + id);
             objectPool.remove(id);
+            debug("Object with id " + id + " invalidated");
+        }
     }
 
     @Override
     public void saveAll(boolean unload) {
+        debug("Saving objects...");
         objectPool.keySet().forEach(object -> {
+            debug(objectPool.get(object).toString());
             save(object, unload);
         });
+        debug("All objects have been saved.");
     }
 
     @Override
     public void invalidate(String id) {
         objectPool.remove(id);
+    }
+
+    private void debug(String message, Object... args) {
+        if (debug) {
+            System.out.println("Debug: " + String.format(message, args));
+        }
     }
 }

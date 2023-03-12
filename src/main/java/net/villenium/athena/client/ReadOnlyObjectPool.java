@@ -2,7 +2,7 @@ package net.villenium.athena.client;
 
 import javax.annotation.Nullable;
 
-public interface IReadOnlyObjectPool<T> {
+public interface ReadOnlyObjectPool<T> {
 
     /**
      * Получить объект из кэша.
