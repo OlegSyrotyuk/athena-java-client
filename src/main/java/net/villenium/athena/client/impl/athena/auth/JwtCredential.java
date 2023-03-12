@@ -1,4 +1,4 @@
-package net.villenium.athena.client.impl.auth;
+package net.villenium.athena.client.impl.athena.auth;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
